@@ -12,13 +12,13 @@ export default function Home() {
     return res.json();
   };
 
+  const query = {
+    id: '1',
+  };
+
   const { data, isLoading } = useSWR(
-    '/api?id=1',
-    createFetcher({
-      query: {
-        id: '1',
-      },
-    }),
+    `/api?${new URLSearchParams(query).toString()}`,
+    createFetcher({ query }),
   );
 
   if (isLoading) {
