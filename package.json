@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-orm": "^0.38.4",
     "hono": "^4.6.17",
     "next": "15.1.5",
     "react": "^19.0.0",
