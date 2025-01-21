@@ -1,10 +1,6 @@
 import { client } from '@/lib/honoServerSide';
 
-export default async function RecipePage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { $get } = client.api;
   const res = await $get({
