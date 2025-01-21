@@ -1,18 +1,25 @@
 'use client';
 
-import { client } from '@/lib/hono';
+import { client } from '@/lib/honoClientSide';
 import { InferRequestType } from 'hono/client';
 import useSWR from 'swr';
 
 export default function Home() {
-  const { $post } = client.api;
+  const { $get } = client.api;
 
-  const createFetcher = (arg: InferRequestType<typeof $post>) => async () => {
-    const res = await $post(arg);
+  const createFetcher = (arg: InferRequestType<typeof $get>) => async () => {
+    const res = await $get(arg);
     return res.json();
   };
 
-  const { data, isLoading } = useSWR('/api', createFetcher({}));
+  const { data, isLoading } = useSWR(
+    '/api?id=1',
+    createFetcher({
+      query: {
+        id: '1',
+      },
+    }),
+  );
 
   if (isLoading) {
     return <>loading</>;
