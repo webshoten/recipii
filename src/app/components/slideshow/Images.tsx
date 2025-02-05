@@ -9,7 +9,7 @@ const Images = ({
   onClick: () => void;
 }) => {
   if (target == null) {
-    return <LoadingSpinner className="w-44" />;
+    return <LoadingSpinner className="w-[200px] h-[200px]" />;
   }
 
   return (

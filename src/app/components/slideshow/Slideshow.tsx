@@ -19,6 +19,9 @@ export type Food = {
   file: File | null;
 };
 
+const sleep = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
+
 const Slideshow = () => {
   const [foods, setFoods] = useState<Food[]>([]);
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
@@ -30,17 +33,17 @@ const Slideshow = () => {
     console.log('call');
     if (canRender) return;
 
-     getRecipe().then(async (res) => {
-       setFoods((prev) => [...prev, ...res.foods]);
-       /** 材料を[""]でセットする */
-       setIngredients((prev) => [
-         ...prev,
-         ...res.ingredients.map((f) => {
-           return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
-         }),
-       ]);
-       setCanRender(true);
-     });
+    getRecipe().then(async (res) => {
+      setFoods((prev) => [...prev, ...res.foods]);
+      /** 材料を[""]でセットする */
+      setIngredients((prev) => [
+        ...prev,
+        ...res.ingredients.map((f) => {
+          return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
+        }),
+      ]);
+      setCanRender(true);
+    });
   }, []);
 
   useLayoutEffect(() => {
@@ -80,51 +83,49 @@ const Slideshow = () => {
   };
 
   const submitIngredient = (items: string[]) => {
+    setCanRender(false);
     putIngredient({
       food_id: foods[currentIndex].id,
       ingred_names: items,
-    }).then(() => {
+    }).then(async () => {
       setIngredients((prev) => {
         return [
           ...prev.filter((p) => p.foodId != foods[currentIndex].id),
           { foodId: foods[currentIndex].id, items: items },
         ];
       });
+      await sleep(150);
+      setCanRender(true);
     });
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div
+        {...getRootProps()}
+        className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
+      >
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p>画像をドロップしてください...</p>
+        ) : (
+          <p>ここをクリックするか、画像をドラッグ＆ドロップしてアップロード</p>
+        )}
+      </div>
       {canRender ? (
-        <>
-          <div
-            {...getRootProps()}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
-          >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p>画像をドロップしてください...</p>
-            ) : (
-              <p>
-                ここをクリックするか、画像をドラッグ＆ドロップしてアップロード
-              </p>
-            )}
+        <div className="relative w-full max-w-2xl aspect-video">
+          <Images
+            target={foods[currentIndex]?.file}
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          />
+          <PreviousButton goTo={goToPrevious} />
+          <NextButton goTo={goToNext} />
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+            {currentIndex + 1} / {foods.length}
           </div>
-
-          <div className="relative w-full max-w-2xl aspect-video">
-            <Images
-              target={foods[currentIndex]?.file}
-              onClick={() => setIsModalOpen(!isModalOpen)}
-            />
-            <PreviousButton goTo={goToPrevious} />
-            <NextButton goTo={goToNext} />
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-              {currentIndex + 1} / {foods.length}
-            </div>
-          </div>
-        </>
+        </div>
       ) : (
-        <LoadingSpinner className="w-44" />
+        <LoadingSpinner className="w-[200px] h-[200px]" />
       )}
       <Modal
         isOpen={isModalOpen}
