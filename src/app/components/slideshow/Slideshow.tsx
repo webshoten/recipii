@@ -19,8 +19,6 @@ export type Food = {
   file: File | null;
 };
 
-const sleep = (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time));
 
 const Slideshow = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -44,7 +42,7 @@ const Slideshow = () => {
       ]);
       setCanRender(true);
     });
-  }, []);
+  }, [canRender]);
 
   useLayoutEffect(() => {
     if (foods.length > 0) goIndex(foods.length - 1);
