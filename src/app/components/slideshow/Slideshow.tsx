@@ -24,21 +24,21 @@ const Slideshow = () => {
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
- const [canRender, setCanRender] = useState(false);
+  const [canRender, setCanRender] = useState(false);
 
- useLayoutEffect(() => {
-   getRecipe().then(async (res) => {
-     setFoods((prev) => [...prev, ...res.foods]);
-     /** 材料を[""]でセットする */
-     setIngredients((prev) => [
-       ...prev,
-       ...res.ingredients.map((f) => {
-         return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
-       }),
-     ]);
-     setCanRender(true);
-   });
- }, []);
+  useLayoutEffect(() => {
+    getRecipe().then(async (res) => {
+      setFoods((prev) => [...prev, ...res.foods]);
+      /** 材料を[""]でセットする */
+      setIngredients((prev) => [
+        ...prev,
+        ...res.ingredients.map((f) => {
+          return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
+        }),
+      ]);
+      setCanRender(true);
+    });
+  }, []);
 
   useLayoutEffect(() => {
     if (foods.length > 0) goIndex(foods.length - 1);
