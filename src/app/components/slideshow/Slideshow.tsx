@@ -77,16 +77,17 @@ const Slideshow = () => {
     setCurrentIndex(() => i);
   };
 
-  const submitIngredient = async (items: string[]) => {
-    await putIngredient({
+  const submitIngredient = (items: string[]) => {
+    putIngredient({
       food_id: foods[currentIndex].id,
       ingred_names: items,
-    });
-    setIngredients((prev) => {
-      return [
-        ...prev.filter((p) => p.foodId != foods[currentIndex].id),
-        { foodId: foods[currentIndex].id, items: items },
-      ];
+    }).then(() => {
+      setIngredients((prev) => {
+        return [
+          ...prev.filter((p) => p.foodId != foods[currentIndex].id),
+          { foodId: foods[currentIndex].id, items: items },
+        ];
+      });
     });
   };
 
