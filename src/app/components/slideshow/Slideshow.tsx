@@ -8,7 +8,7 @@ import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
 import { putIngredient } from '@/repository/ingredient/putIngredient';
 import { getRecipe } from '@/repository/recipe/getRecipe';
-import { memo, useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export type Ingredient = { foodId: number; items: string[] };
