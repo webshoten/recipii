@@ -8,7 +8,7 @@ import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
 import { putIngredient } from '@/repository/ingredient/putIngredient';
 import { getRecipe } from '@/repository/recipe/getRecipe';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { memo, useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export type Ingredient = { foodId: number; items: string[] };
@@ -18,7 +18,6 @@ export type Food = {
   yyyymmdd: string | null;
   file: File | null;
 };
-
 
 const Slideshow = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -81,7 +80,6 @@ const Slideshow = () => {
   };
 
   const submitIngredient = (items: string[]) => {
-    // setCanRender(false);
     putIngredient({
       food_id: foods[currentIndex].id,
       ingred_names: items,
@@ -92,8 +90,6 @@ const Slideshow = () => {
           { foodId: foods[currentIndex].id, items: items },
         ];
       });
-      // await sleep(5);
-      // setCanRender(true);
     });
   };
 
@@ -116,13 +112,10 @@ const Slideshow = () => {
       </div>
       <div className="relative w-full max-w-2xl aspect-video">
         {canRender ? (
-          <>
-            <div
-              className="absolute w-full h-full"
-              onClick={() => toggleModal(true)}
-            ></div>
-            <Images target={foods[currentIndex]?.file} onClick={() => {}} />
-          </>
+          <Images
+            target={foods[currentIndex]?.file}
+            onClick={() => toggleModal(true)}
+          />
         ) : (
           <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
         )}
