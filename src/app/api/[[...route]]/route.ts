@@ -42,7 +42,11 @@ const api = new Hono()
   .basePath('/api')
   .use(
     cors({
-      origin: ['https://recipii.vercel.app', 'http://localhost:3000'], // 本番と開発環境のURL
+      origin: [
+        'https://recipii.vercel.app',
+        'https://nextjss3upload.s3.ap-northeast-1.amazonaws.com',
+        'http://localhost:3000',
+      ], // 本番と開発環境のURL
       allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
       allowMethods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
       exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
