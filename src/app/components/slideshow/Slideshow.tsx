@@ -94,7 +94,7 @@ const Slideshow = () => {
           { foodId: foods[currentIndex].id, items: items },
         ];
       });
-      await sleep(150);
+      await sleep(100);
       setCanRender(true);
     });
   };
@@ -112,21 +112,21 @@ const Slideshow = () => {
           <p>ここをクリックするか、画像をドラッグ＆ドロップしてアップロード</p>
         )}
       </div>
-      {canRender ? (
-        <div className="relative w-full max-w-2xl aspect-video">
+      <div className="relative w-full max-w-2xl aspect-video">
+        {canRender ? (
           <Images
             target={foods[currentIndex]?.file}
             onClick={() => setIsModalOpen(!isModalOpen)}
           />
-          <PreviousButton goTo={goToPrevious} />
-          <NextButton goTo={goToNext} />
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-            {currentIndex + 1} / {foods.length}
-          </div>
+        ) : (
+          <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
+        )}
+        <PreviousButton goTo={goToPrevious} />
+        <NextButton goTo={goToNext} />
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+          {currentIndex + 1} / {foods.length}
         </div>
-      ) : (
-        <LoadingSpinner className="w-[200px] h-[200px]" />
-      )}
+      </div>
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(!isModalOpen)}
