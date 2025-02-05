@@ -94,7 +94,7 @@ const Slideshow = () => {
           { foodId: foods[currentIndex].id, items: items },
         ];
       });
-      await sleep(50);
+      await sleep(30);
       setCanRender(true);
     });
   };
