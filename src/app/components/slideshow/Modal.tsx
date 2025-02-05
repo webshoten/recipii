@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { getFoodImage } from '@/repository/food/getFoodImage';
 import { Minus, Plus, X } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const [inputs, setInputs] = useState<string[]>(items || ['']);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (items) setInputs(items);
   }, [items]);
 

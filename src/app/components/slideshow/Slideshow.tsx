@@ -8,7 +8,7 @@ import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
 import { putIngredient } from '@/repository/ingredient/putIngredient';
 import { getRecipe } from '@/repository/recipe/getRecipe';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export type Ingredient = { foodId: number; items: string[] };
@@ -25,7 +25,7 @@ const Slideshow = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getRecipe().then(async (res) => {
       setFoods((prev) => [...prev, ...res.foods]);
       /** 材料を[""]でセットする */
@@ -38,11 +38,11 @@ const Slideshow = () => {
     });
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (foods.length > 0) goIndex(foods.length - 1);
   }, [foods]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.log(ingredients);
   }, [ingredients]);
 
