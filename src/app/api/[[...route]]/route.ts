@@ -17,6 +17,7 @@ import { createMiddleware } from 'hono/factory';
 import { handle } from 'hono/vercel';
 import _ from 'lodash';
 import { z } from 'zod';
+import { cors } from 'hono/cors';
 
 export const runtime = 'edge';
 
@@ -39,6 +40,16 @@ const middleware = createMiddleware<MiddlewareEnv>(
 
 const api = new Hono()
   .basePath('/api')
+  .use(
+    cors({
+      origin: ['https://recipii.vercel.app', 'http://localhost:3000'], // 本番と開発環境のURL
+      allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
+      allowMethods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+      exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+      maxAge: 600,
+      credentials: true,
+    }),
+  )
   .use(middleware)
   /**
    * foodのs3 presigned put urlをファイル名&日付指定で生成する
