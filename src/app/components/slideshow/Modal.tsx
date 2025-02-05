@@ -23,9 +23,9 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const [inputs, setInputs] = useState<string[]>(items || ['']);
 
-  useLayoutEffect(() => {
-    if (items) setInputs(items);
-  }, [items]);
+  // useLayoutEffect(() => {
+  //   if (items) setInputs(items);
+  // }, [items]);
 
   if (!isOpen) return null;
 

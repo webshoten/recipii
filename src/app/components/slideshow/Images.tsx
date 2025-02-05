@@ -1,3 +1,4 @@
+import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
 import Image from 'next/image';
 
 const Images = ({
@@ -8,7 +9,7 @@ const Images = ({
   onClick: () => void;
 }) => {
   if (target == null) {
-    return null;
+    return <LoadingSpinner className="w-44" />;
   }
 
   return (
