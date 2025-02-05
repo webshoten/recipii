@@ -8,7 +8,7 @@ import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
 import { putIngredient } from '@/repository/ingredient/putIngredient';
 import { getRecipe } from '@/repository/recipe/getRecipe';
-import { useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export type Ingredient = { foodId: number; items: string[] };
@@ -83,7 +83,7 @@ const Slideshow = () => {
   };
 
   const submitIngredient = (items: string[]) => {
-    setCanRender(false);
+    // setCanRender(false);
     putIngredient({
       food_id: foods[currentIndex].id,
       ingred_names: items,
@@ -94,10 +94,14 @@ const Slideshow = () => {
           { foodId: foods[currentIndex].id, items: items },
         ];
       });
-      await sleep(5);
-      setCanRender(true);
+      // await sleep(5);
+      // setCanRender(true);
     });
   };
+
+  const toggleModal = useCallback((param: boolean) => {
+    setIsModalOpen(param);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -116,7 +120,7 @@ const Slideshow = () => {
         {canRender ? (
           <Images
             target={foods[currentIndex]?.file}
-            onClick={() => setIsModalOpen(!isModalOpen)}
+            onClick={() => toggleModal(true)}
           />
         ) : (
           <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
@@ -131,7 +135,7 @@ const Slideshow = () => {
       </div>
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(!isModalOpen)}
+        onClose={() => toggleModal(false)}
         items={
           ingredients.find((i) => i.foodId == foods[currentIndex].id)?.items
         }
