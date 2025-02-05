@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="absolute flex items-center justify-center opacity-80">
+    <div className="absolute flex items-center justify-center opacity-85">
       <div
         onClick={() => submit() /** モーダルが閉じたとき */}
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-0 top-0 left-0"

@@ -1,6 +1,7 @@
 'use client';
 
 import Images from '@/app/components/slideshow/Images';
+import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
 import Modal from '@/app/components/slideshow/Modal';
 import { NextButton } from '@/app/components/slideshow/NextButton';
 import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
@@ -92,29 +93,36 @@ const Slideshow = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div
-        {...getRootProps()}
-        className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>画像をドロップしてください...</p>
-        ) : (
-          <p>ここをクリックするか、画像をドラッグ＆ドロップしてアップロード</p>
-        )}
-      </div>
-      {foods.length > 0 && (
-        <div className="relative w-full max-w-2xl aspect-video">
-          <Images
-            target={foods[currentIndex]?.file}
-            onClick={() => setIsModalOpen(!isModalOpen)}
-          />
-          <PreviousButton goTo={goToPrevious} />
-          <NextButton goTo={goToNext} />
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-            {currentIndex + 1} / {foods.length}
+      {foods.length > 0 ? (
+        <>
+          <div
+            {...getRootProps()}
+            className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
+          >
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>画像をドロップしてください...</p>
+            ) : (
+              <p>
+                ここをクリックするか、画像をドラッグ＆ドロップしてアップロード
+              </p>
+            )}
           </div>
-        </div>
+
+          <div className="relative w-full max-w-2xl aspect-video">
+            <Images
+              target={foods[currentIndex]?.file}
+              onClick={() => setIsModalOpen(!isModalOpen)}
+            />
+            <PreviousButton goTo={goToPrevious} />
+            <NextButton goTo={goToNext} />
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+              {currentIndex + 1} / {foods.length}
+            </div>
+          </div>
+        </>
+      ) : (
+        <LoadingSpinner className="w-44" />
       )}
       <Modal
         isOpen={isModalOpen}
