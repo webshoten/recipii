@@ -116,10 +116,13 @@ const Slideshow = () => {
       </div>
       <div className="relative w-full max-w-2xl aspect-video">
         {canRender ? (
-          <Images
-            target={foods[currentIndex]?.file}
-            onClick={() => toggleModal(true)}
-          />
+          <>
+            <div
+              className="absolute w-full h-full"
+              onClick={() => toggleModal(true)}
+            ></div>
+            <Images target={foods[currentIndex]?.file} onClick={() => {}} />
+          </>
         ) : (
           <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
         )}
