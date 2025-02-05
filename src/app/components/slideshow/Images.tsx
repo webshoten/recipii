@@ -1,5 +1,9 @@
 import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
 import Image from 'next/image';
+import { useLayoutEffect } from 'react';
+
+const sleep = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
 
 const Images = ({
   target,
@@ -8,9 +12,14 @@ const Images = ({
   target: File | null;
   onClick: () => void;
 }) => {
+  useLayoutEffect(() => {
+    sleep(1000);
+  }, [target]);
+
   if (target == null) {
     return <LoadingSpinner className="w-44" />;
   }
+
 
   return (
     <Image
