@@ -27,6 +27,7 @@ const Slideshow = () => {
   const [canRender, setCanRender] = useState(false);
 
   useLayoutEffect(() => {
+    console.log('call');
     getRecipe().then(async (res) => {
       setFoods((prev) => [...prev, ...res.foods]);
       /** 材料を[""]でセットする */
