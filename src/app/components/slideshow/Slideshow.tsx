@@ -42,10 +42,6 @@ const Slideshow = () => {
     if (foods.length > 0) goIndex(foods.length - 1);
   }, [foods]);
 
-  useLayoutEffect(() => {
-    console.log(ingredients);
-  }, [ingredients]);
-
   const onDrop = async (oneFile: File[]) => {
     const res = await putFood(oneFile[0]);
     await setFoods((prev) => [
