@@ -45,9 +45,8 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const submit = () => {
-    console.log('Submitted inputs:', inputs);
-    submitItems(inputs);
     onClose();
+    submitItems(inputs);
   };
 
   const generateIngredientByAI = async () => {
