@@ -28,17 +28,19 @@ const Slideshow = () => {
 
   useLayoutEffect(() => {
     console.log('call');
-    getRecipe().then(async (res) => {
-      setFoods((prev) => [...prev, ...res.foods]);
-      /** 材料を[""]でセットする */
-      setIngredients((prev) => [
-        ...prev,
-        ...res.ingredients.map((f) => {
-          return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
-        }),
-      ]);
-      setCanRender(true);
-    });
+    if (canRender) return;
+
+     getRecipe().then(async (res) => {
+       setFoods((prev) => [...prev, ...res.foods]);
+       /** 材料を[""]でセットする */
+       setIngredients((prev) => [
+         ...prev,
+         ...res.ingredients.map((f) => {
+           return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
+         }),
+       ]);
+       setCanRender(true);
+     });
   }, []);
 
   useLayoutEffect(() => {
