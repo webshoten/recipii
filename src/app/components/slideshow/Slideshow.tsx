@@ -24,9 +24,9 @@ const Slideshow = () => {
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+ const [canRender, setCanRender] = useState(false);
 
-  useLayoutEffect(() => {
-
+ useLayoutEffect(() => {
    getRecipe().then(async (res) => {
      setFoods((prev) => [...prev, ...res.foods]);
      /** 材料を[""]でセットする */
@@ -36,8 +36,9 @@ const Slideshow = () => {
          return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
        }),
      ]);
+     setCanRender(true);
    });
-  }, []);
+ }, []);
 
   useLayoutEffect(() => {
     if (foods.length > 0) goIndex(foods.length - 1);
@@ -90,7 +91,7 @@ const Slideshow = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      {foods.length > 0 ? (
+      {canRender ? (
         <>
           <div
             {...getRootProps()}
