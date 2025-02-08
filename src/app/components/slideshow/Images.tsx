@@ -1,17 +1,6 @@
-import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
 import Image from 'next/image';
 
-const Images = ({
-  target,
-  onClick,
-}: {
-  target: File | null;
-  onClick: () => void;
-}) => {
-  if (target == null) {
-    return <LoadingSpinner className="w-[200px] h-[200px]" />;
-  }
-
+const Images = ({ target, onClick }: { target: File; onClick: () => void }) => {
   return (
     <>
       <Image

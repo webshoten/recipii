@@ -97,6 +97,10 @@ const Slideshow = () => {
     setIsModalOpen(param);
   }, []);
 
+  const isImageRender = () => {
+    return canRender;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div
@@ -110,21 +114,26 @@ const Slideshow = () => {
           <p>ここをクリックするか、画像をドラッグ＆ドロップしてアップロード</p>
         )}
       </div>
+
       <div className="relative w-full max-w-2xl aspect-video">
-        {canRender ? (
-          <Images
-            target={foods[currentIndex]?.file}
-            onClick={() => toggleModal(true)}
-          />
+        {isImageRender() ? (
+          <>
+            {foods.length !== 0 && (
+              <>
+                <Images
+                  target={foods[currentIndex]?.file as File}
+                  onClick={() => toggleModal(true)}
+                />
+                <PreviousButton goTo={goToPrevious} />
+                <NextButton goTo={goToNext} />
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+                  {currentIndex + 1} / {foods.length}
+                </div>
+              </>
+            )}
+          </>
         ) : (
           <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
-        )}
-        {canRender && <PreviousButton goTo={goToPrevious} />}
-        {canRender && <NextButton goTo={goToNext} />}
-        {canRender && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-            {currentIndex + 1} / {foods.length}
-          </div>
         )}
       </div>
       <Modal
