@@ -97,10 +97,6 @@ const Slideshow = () => {
     setIsModalOpen(param);
   }, []);
 
-  const isImageRender = () => {
-    return canRender;
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div
@@ -116,7 +112,7 @@ const Slideshow = () => {
       </div>
 
       <div className="relative w-full max-w-2xl aspect-video">
-        {isImageRender() ? (
+        {canRender ? (
           <>
             {foods.length !== 0 && (
               <>
