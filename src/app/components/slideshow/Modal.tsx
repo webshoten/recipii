@@ -11,7 +11,6 @@ import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Ingredient } from '@/app/components/slideshow/Slideshow';
 import { Generate5NutrientsByAI } from '@/app/components/slideshow/server/Generate5NutrientsByAI';
-import { number } from 'zod';
 
 export type Items = {
   name: string;
