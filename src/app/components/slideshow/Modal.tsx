@@ -109,12 +109,14 @@ const Modal: React.FC<ModalProps> = ({
       }),
     );
     setNutritions({
-      carbohydrate:
-        Number(res.find((a) => a.name === '炭水化物')?.percent) || 0,
-      fat: Number(res.find((a) => a.name === '脂質')?.percent) || 0,
-      mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent) || 0,
-      protein: Number(res.find((a) => a.name === 'タンパク質')?.percent) || 0,
-      vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent) || 0,
+      carbohydrate: Number(res.find((a) => a.name === '炭水化物')?.percent),
+      fat: Number(res.find((a) => a.name === '脂質')?.percent),
+      mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent),
+      protein: Number(
+        res.find((a) => a.name === 'タンパク質' || a.name === 'たんぱく質')
+          ?.percent,
+      ),
+      vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent),
     });
   };
 
