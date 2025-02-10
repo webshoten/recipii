@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { getFoodImage } from '@/repository/food/getFoodImage';
 import { Minus, Plus } from 'lucide-react';
 import type React from 'react';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
@@ -45,6 +45,7 @@ const Modal: React.FC<ModalProps> = ({
     vitamin: number;
     mineral: number;
   } | null>(null);
+  const [tab, setTab] = useState<'recipe' | 'nutrition'>('recipe');
 
   useLayoutEffect(() => {
     if (ingredient && ingredient?.ingredients.length > 0) {
@@ -53,6 +54,12 @@ const Modal: React.FC<ModalProps> = ({
       setInputs(() => [{ name: '', quantity: '' }]);
     }
   }, [ingredient]);
+
+  useEffect(() => {
+    if (tab === 'nutrition') {
+      generate5NutrientsByAI().then(() => {});
+    }
+  }, [tab]);
 
   if (!isOpen) return null;
 
@@ -77,7 +84,7 @@ const Modal: React.FC<ModalProps> = ({
     setInputs(newInputs);
   };
 
-  const submit = () => {
+  const onModalClose = () => {
     if (
       ingredient?.ingredients.map((x) => {
         return { name: x.name, quantity: x.quantity };
@@ -85,6 +92,7 @@ const Modal: React.FC<ModalProps> = ({
     ) {
       submitIngredient(inputs);
     }
+    setTab('recipe');
     onClose();
   };
 
@@ -94,41 +102,41 @@ const Modal: React.FC<ModalProps> = ({
     setInputs([...res]);
   };
 
+  const generate5NutrientsByAI = async () => {
+    const res = await Generate5NutrientsByAI(
+      inputs.map((a) => {
+        return { name: a.name, quantity: a.quantity + 'g' };
+      }),
+    );
+    setNutritions({
+      carbohydrate:
+        Number(res.find((a) => a.name === '炭水化物')?.percent) || 0,
+      fat: Number(res.find((a) => a.name === '脂質')?.percent) || 0,
+      mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent) || 0,
+      protein: Number(res.find((a) => a.name === 'タンパク質')?.percent) || 0,
+      vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent) || 0,
+    });
+  };
+
   return (
     <div className="absolute flex items-center justify-center">
       <div
-        onClick={() => submit() /** モーダルが閉じたとき */}
+        onClick={() => onModalClose() /** モーダルが閉じたとき */}
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-0 top-0 left-0"
       ></div>
-      <div className="bg-white rounded-lg p-6 w-full max-w-md z-50 fixed ">
-        <Tabs defaultValue="recipe" className="w-full">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md z-50 h-[500px] fixed ">
+        <Tabs defaultValue="recipe" className="w-full z-0">
           <TabsList className="grid w-full grid-cols-2 mb-10">
-            <TabsTrigger value="recipe">レシピ</TabsTrigger>
             <TabsTrigger
-              onClick={async () => {
-                debugger;
-                const res = await Generate5NutrientsByAI(
-                  inputs.map((a) => {
-                    return { name: a.name, quantity: a.quantity + 'g' };
-                  }),
-                );
-                debugger;
-                setNutritions({
-                  carbohydrate:
-                    Number(res.find((a) => a.name === '炭水化物')?.percent) ||
-                    0,
-                  fat: Number(res.find((a) => a.name === '脂質')?.percent) || 0,
-                  mineral:
-                    Number(res.find((a) => a.name === 'ミネラル')?.percent) ||
-                    0,
-                  protein:
-                    Number(res.find((a) => a.name === 'タンパク質')?.percent) ||
-                    0,
-                  vitamin:
-                    Number(res.find((a) => a.name === 'ビタミン')?.percent) ||
-                    0,
-                });
-              }}
+              className="z-20"
+              value="recipe"
+              onClick={() => setTab('recipe')}
+            >
+              レシピ
+            </TabsTrigger>
+            <TabsTrigger
+              className="z-20"
+              onClick={() => setTab('nutrition')}
               value="nutrition"
             >
               栄養バランス(AI)
@@ -136,7 +144,7 @@ const Modal: React.FC<ModalProps> = ({
           </TabsList>
 
           <TabsContent value="recipe">
-            <ScrollArea className="h-[300px]">
+            <ScrollArea className="h-[330px]">
               <div className="space-y-4 p-3">
                 {inputs.map((input, index) => (
                   <div key={index} className="flex items-center mb-2">
@@ -183,7 +191,7 @@ const Modal: React.FC<ModalProps> = ({
                   className="ml-1"
                   onClick={() => generateIngredientByAI()}
                 >
-                  AI食材生成
+                  AI食材分析
                 </Button>
               </div>
             </div>
