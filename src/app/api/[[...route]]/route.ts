@@ -13,11 +13,11 @@ import { NeonQueryFunction } from '@neondatabase/serverless';
 import { eq, inArray } from 'drizzle-orm';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { Context, Hono, Next } from 'hono';
+import { cors } from 'hono/cors';
 import { createMiddleware } from 'hono/factory';
 import { handle } from 'hono/vercel';
 import _ from 'lodash';
 import { z } from 'zod';
-import { cors } from 'hono/cors';
 
 export const runtime = 'edge';
 
@@ -197,18 +197,23 @@ const api = new Hono()
       'json',
       z.object({
         food_id: z.number(),
-        ingred_names: z.array(z.string()),
+        ingreds: z.array(
+          z.object({
+            name: z.string(),
+            quantity: z.string().or(z.null()),
+          }),
+        ),
       }),
     ),
     middleware,
     async (c) => {
       const client = c.var.dbClient;
-      const { food_id, ingred_names } = c.req.valid('json');
+      const { food_id, ingreds } = c.req.valid('json');
       const res1 = await client
         .insert(ingredient)
         .values(
-          ingred_names.map((i) => {
-            return { name: i };
+          ingreds.map((i) => {
+            return { name: i.name };
           }),
         )
         .onConflictDoNothing()
@@ -228,13 +233,26 @@ const api = new Hono()
         .insert(foodIngredient)
         .values(
           res1.map((i) => {
-            return { foodId: food_id, ingredientId: i.id };
+            return {
+              foodId: food_id,
+              ingredientId: i.id,
+              quantity: ingreds.find((a) => a.name === i.name)?.quantity,
+            };
           }),
         )
         .onConflictDoNothing()
         .returning();
 
-      return c.json(res3);
+      return c.json(
+        res3.map((x) => {
+          return {
+            foodId: x.foodId,
+            ingredientId: x.ingredientId,
+            quantity: x.quantity,
+            ingredientName: res1.find((a) => a.id === x.ingredientId)?.name,
+          };
+        }),
+      );
     },
   ) /**
    * ingredient情報
@@ -261,25 +279,32 @@ const api = new Hono()
       } else {
         whereQuery = eq(foodIngredient.foodId, Number(food_ids));
       }
-
       const res1 = await client.select().from(foodIngredient).where(whereQuery);
-
       const grouped = _.groupBy(res1, (value) => value.foodId);
-
       const a = [];
       for (const i of Object.keys(grouped)) {
         const foodId = Number(i);
-        const ingredIds = grouped[foodId];
-        const ingreds = await client
+        const ingreds = grouped[foodId];
+        const res2 = await client
           .select()
           .from(ingredient)
           .where(
             inArray(
               ingredient.id,
-              ingredIds.map((r) => r.ingredientId),
+              ingreds.map((r) => r.ingredientId),
             ),
           );
-        a.push({ foodId, ingreds });
+        a.push({
+          foodId,
+          ingredients: res2.map((x) => {
+            return {
+              id: x.id,
+              name: x.name,
+              quantity:
+                ingreds.find((a) => a.ingredientId === x.id)?.quantity ?? null,
+            };
+          }),
+        });
       }
 
       return c.json(a);

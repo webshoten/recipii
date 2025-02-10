@@ -1,8 +1,8 @@
 'use server';
 
-import { generateIngredientsByAI } from '@/lib/generateIngredientsByAI';
+import { analyzeImage } from '@/lib/generateIngredientsByAI';
 
 export const GenerateIngredientByAI = async (url: string) => {
   'use server';
-  return await generateIngredientsByAI(url);
+  return await analyzeImage(url);
 };

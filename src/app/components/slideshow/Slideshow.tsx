@@ -2,7 +2,7 @@
 
 import Images from '@/app/components/slideshow/Images';
 import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
-import Modal from '@/app/components/slideshow/Modal';
+import Modal, { Items } from '@/app/components/slideshow/Modal';
 import { NextButton } from '@/app/components/slideshow/NextButton';
 import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
@@ -11,7 +11,20 @@ import { getRecipe } from '@/repository/recipe/getRecipe';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-export type Ingredient = { foodId: number; items: string[] };
+export type Item = {
+  name: string;
+  quantity: string;
+};
+
+export type Ingredient = {
+  foodId: number;
+  ingredients: {
+    id: number;
+    name: string;
+    quantity: string | null;
+  }[];
+};
+
 export type Food = {
   id: number;
   name: string;
@@ -21,24 +34,19 @@ export type Food = {
 
 const Slideshow = () => {
   const [foods, setFoods] = useState<Food[]>([]);
-  const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [canRender, setCanRender] = useState(false);
 
   useLayoutEffect(() => {
-    console.log('call');
     if (canRender) return;
 
     getRecipe().then(async (res) => {
+      debugger;
       setFoods((prev) => [...prev, ...res.foods]);
       /** 材料を[""]でセットする */
-      setIngredients((prev) => [
-        ...prev,
-        ...res.ingredients.map((f) => {
-          return { foodId: f.foodId, items: f.ingreds.map((x) => x.name) };
-        }),
-      ]);
+      setIngredients((prev) => [...prev, ...res.ingredients]);
       setCanRender(true);
     });
   }, [canRender]);
@@ -53,7 +61,11 @@ const Slideshow = () => {
       ...prev,
       { id: res.id, name: res.name, yyyymmdd: res.yyyymmdd, file: oneFile[0] },
     ]);
-    setIngredients((prev) => [...prev, { foodId: res.id, items: [''] }]);
+
+    await setIngredients((prev) => [
+      ...prev,
+      { foodId: res.id, ingredients: [] },
+    ]);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -79,18 +91,36 @@ const Slideshow = () => {
     setCurrentIndex(() => i);
   };
 
-  const submitIngredient = (items: string[]) => {
+  const submitIngredient = (items: Items) => {
     putIngredient({
       food_id: foods[currentIndex].id,
-      ingred_names: items,
-    }).then(async () => {
-      setIngredients((prev) => {
-        return [
-          ...prev.filter((p) => p.foodId != foods[currentIndex].id),
-          { foodId: foods[currentIndex].id, items: items },
-        ];
-      });
-    });
+      ingreds: items,
+    }).then(
+      async (
+        res: {
+          foodId: number;
+          ingredientId: number;
+          quantity: string | null;
+          ingredientName: string | undefined;
+        }[],
+      ) => {
+        setIngredients((prev) => {
+          return [
+            ...prev,
+            {
+              foodId: foods[currentIndex].id,
+              ingredients: res.map((x) => {
+                return {
+                  id: x.ingredientId,
+                  name: x.ingredientName || '',
+                  quantity: x.quantity,
+                };
+              }),
+            },
+          ];
+        });
+      },
+    );
   };
 
   const toggleModal = useCallback((param: boolean) => {
@@ -135,10 +165,8 @@ const Slideshow = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => toggleModal(false)}
-        items={
-          ingredients.find((i) => i.foodId == foods[currentIndex].id)?.items
-        }
-        submitItems={submitIngredient}
+        ingredient={ingredients.find((i) => i.foodId == foods[currentIndex].id)}
+        submitIngredient={submitIngredient}
         foodFilePath={
           foods[currentIndex]?.yyyymmdd + '/' + foods[currentIndex]?.name
         }

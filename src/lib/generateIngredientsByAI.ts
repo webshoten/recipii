@@ -11,7 +11,7 @@ function initializeGeminiModel(apiKey: string) {
 function getApiKey(): string {
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
   if (!apiKey) {
-    console.error('GCP_API_KEY 環境変数が設定されていません。');
+    console.error('NEXT_PUBLIC_GEMINI_API_KEY 環境変数が設定されていません。');
     process.exit(1);
   }
   return apiKey;
@@ -34,15 +34,17 @@ async function readImageFile(
 }
 
 // 画像を分析する関数
-async function analyzeImage(imagePath: string) {
+export async function analyzeImage(imagePath: string) {
   const apiKey = getApiKey();
   try {
     const model = initializeGeminiModel(apiKey);
     const { data: base64, mimeType } = await readImageFile(imagePath);
 
-    const prompt = `こちらのURL(${url})で表示されている画像の中の料理で使用している食材のみをカンマ区切りで書き出してください。
-    出力は「食材A,材料B」のようにお願いします。
-    料理じゃなかった場合は空文字のみで問題ありません。`;
+    const prompt = `こちらのURL(${url})で表示されている画像の中の料理で使用している食材と量をカンマ区切りで書き出してください。
+    例えば出力は「食材A|Aの量g,食材B|Bの量g」だけでお願いします。
+    個数などの場合でも必ずグラム(g)表記に置き換えてください。
+    例えば1個⇒10gなどです。
+    推測で構いません。料理じゃなかった場合は「判断できません」のみで問題ありません。`;
     const imagePart = {
       inlineData: {
         data: base64,
@@ -52,13 +54,19 @@ async function analyzeImage(imagePath: string) {
 
     const result = await model.generateContent([prompt, imagePart]);
     const response = await result.response;
-    const ingredients = response.text().trim().split(',');
+    const items = response.text().trim().split(',');
+    if (items[0] === '判断できません') {
+      return [{ name: '', quantity: '' }];
+    }
+    const ingredients = items.map((a) => {
+      return {
+        name: a.split('|')[0],
+        quantity: a.split('|')[1].replace('g', ''),
+      };
+    });
     return ingredients;
   } catch (error) {
     console.error(`画像の分析中にエラーが発生しました: ${imagePath}`, error);
+    return [];
   }
-}
-
-export async function generateIngredientsByAI(url: string) {
-  return await analyzeImage(url);
 }
