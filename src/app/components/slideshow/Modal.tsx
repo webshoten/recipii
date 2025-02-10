@@ -10,6 +10,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Ingredient } from '@/app/components/slideshow/Slideshow';
+import { Generate5NutrientsByAI } from '@/app/components/slideshow/server/Generate5NutrientsByAI';
+import { number } from 'zod';
 
 export type Items = {
   name: string;
@@ -37,9 +39,15 @@ const Modal: React.FC<ModalProps> = ({
       quantity: string | null;
     }[]
   >(ingredient?.ingredients || []);
+  const [nutritions, setNutritions] = useState<{
+    carbohydrate: number;
+    protein: number;
+    fat: number;
+    vitamin: number;
+    mineral: number;
+  } | null>(null);
 
   useLayoutEffect(() => {
-    debugger;
     if (ingredient && ingredient?.ingredients.length > 0) {
       setInputs(ingredient?.ingredients);
     } else {
@@ -87,15 +95,6 @@ const Modal: React.FC<ModalProps> = ({
     setInputs([...res]);
   };
 
-  // サンプルデータ - 実際のアプリではAPIやデータベースから取得します
-  const sampleNutrition = {
-    carbs: 65,
-    protein: 80,
-    fat: 45,
-    vitamins: 70,
-    minerals: 60,
-  };
-
   return (
     <div className="absolute flex items-center justify-center">
       <div
@@ -106,7 +105,33 @@ const Modal: React.FC<ModalProps> = ({
         <Tabs defaultValue="recipe" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-10">
             <TabsTrigger value="recipe">レシピ</TabsTrigger>
-            <TabsTrigger value="nutrition">栄養バランス</TabsTrigger>
+            <TabsTrigger
+              onClick={async () => {
+                const res = await Generate5NutrientsByAI(
+                  inputs.map((a) => {
+                    return { name: a.name, quantity: a.quantity + 'g' };
+                  }),
+                );
+                setNutritions({
+                  carbohydrate:
+                    Number(res.find((a) => a.name === '炭水化物')?.percent) ||
+                    0,
+                  fat: Number(res.find((a) => a.name === '脂質')?.percent) || 0,
+                  mineral:
+                    Number(res.find((a) => a.name === 'ミネラル')?.percent) ||
+                    0,
+                  protein:
+                    Number(res.find((a) => a.name === 'タンパク質')?.percent) ||
+                    0,
+                  vitamin:
+                    Number(res.find((a) => a.name === 'ビタミン')?.percent) ||
+                    0,
+                });
+              }}
+              value="nutrition"
+            >
+              栄養バランス(AI)
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="recipe">
@@ -171,9 +196,12 @@ const Modal: React.FC<ModalProps> = ({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div>炭水化物</div>
-                      <div>{sampleNutrition.carbs}%</div>
+                      <div>{nutritions?.carbohydrate}%</div>
                     </div>
-                    <Progress value={sampleNutrition.carbs} className="h-2" />
+                    <Progress
+                      value={nutritions?.carbohydrate}
+                      className="h-2"
+                    />
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -181,9 +209,9 @@ const Modal: React.FC<ModalProps> = ({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div>タンパク質</div>
-                      <div>{sampleNutrition.protein}%</div>
+                      <div>{nutritions?.protein}%</div>
                     </div>
-                    <Progress value={sampleNutrition.protein} className="h-2" />
+                    <Progress value={nutritions?.protein} className="h-2" />
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -191,9 +219,9 @@ const Modal: React.FC<ModalProps> = ({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div>脂質</div>
-                      <div>{sampleNutrition.fat}%</div>
+                      <div>{nutritions?.fat}%</div>
                     </div>
-                    <Progress value={sampleNutrition.fat} className="h-2" />
+                    <Progress value={nutritions?.fat} className="h-2" />
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -201,12 +229,9 @@ const Modal: React.FC<ModalProps> = ({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div>ビタミン</div>
-                      <div>{sampleNutrition.vitamins}%</div>
+                      <div>{nutritions?.vitamin}%</div>
                     </div>
-                    <Progress
-                      value={sampleNutrition.vitamins}
-                      className="h-2"
-                    />
+                    <Progress value={nutritions?.vitamin} className="h-2" />
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -214,12 +239,9 @@ const Modal: React.FC<ModalProps> = ({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div>ミネラル</div>
-                      <div>{sampleNutrition.minerals}%</div>
+                      <div>{nutritions?.mineral}%</div>
                     </div>
-                    <Progress
-                      value={sampleNutrition.minerals}
-                      className="h-2"
-                    />
+                    <Progress value={nutritions?.mineral} className="h-2" />
                   </div>
                 </div>
               </div>

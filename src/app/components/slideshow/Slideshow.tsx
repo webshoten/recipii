@@ -43,7 +43,6 @@ const Slideshow = () => {
     if (canRender) return;
 
     getRecipe().then(async (res) => {
-      debugger;
       setFoods((prev) => [...prev, ...res.foods]);
       /** 材料を[""]でセットする */
       setIngredients((prev) => [...prev, ...res.ingredients]);
