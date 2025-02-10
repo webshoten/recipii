@@ -107,11 +107,13 @@ const Modal: React.FC<ModalProps> = ({
             <TabsTrigger value="recipe">レシピ</TabsTrigger>
             <TabsTrigger
               onClick={async () => {
+                debugger;
                 const res = await Generate5NutrientsByAI(
                   inputs.map((a) => {
                     return { name: a.name, quantity: a.quantity + 'g' };
                   }),
                 );
+                debugger;
                 setNutritions({
                   carbohydrate:
                     Number(res.find((a) => a.name === '炭水化物')?.percent) ||
