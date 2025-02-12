@@ -6,7 +6,10 @@ import Modal, { Items } from '@/app/components/slideshow/Modal';
 import { NextButton } from '@/app/components/slideshow/NextButton';
 import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
-import { putIngredient } from '@/repository/ingredient/putIngredient';
+import {
+  putIngredient,
+  PutIngredientResponse,
+} from '@/repository/ingredient/putIngredient';
 import { getRecipe } from '@/repository/recipe/getRecipe';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -44,7 +47,6 @@ const Slideshow = () => {
 
     getRecipe().then(async (res) => {
       setFoods((prev) => [...prev, ...res.foods]);
-      /** 材料を[""]でセットする */
       setIngredients((prev) => [...prev, ...res.ingredients]);
       setCanRender(true);
     });
@@ -94,32 +96,23 @@ const Slideshow = () => {
     putIngredient({
       food_id: foods[currentIndex].id,
       ingreds: items,
-    }).then(
-      async (
-        res: {
-          foodId: number;
-          ingredientId: number;
-          quantity: string | null;
-          ingredientName: string | undefined;
-        }[],
-      ) => {
-        setIngredients((prev) => {
-          return [
-            ...prev,
-            {
-              foodId: foods[currentIndex].id,
-              ingredients: res.map((x) => {
-                return {
-                  id: x.ingredientId,
-                  name: x.ingredientName || '',
-                  quantity: x.quantity,
-                };
-              }),
-            },
-          ];
-        });
-      },
-    );
+    }).then(async (res: PutIngredientResponse) => {
+      setIngredients((prev) => {
+        return [
+          ...prev,
+          {
+            foodId: foods[currentIndex].id,
+            ingredients: res.map((x) => {
+              return {
+                id: x.ingredientId,
+                name: x.ingredientName || '',
+                quantity: x.quantity,
+              };
+            }),
+          },
+        ];
+      });
+    });
   };
 
   const toggleModal = useCallback((param: boolean) => {
