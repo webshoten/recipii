@@ -1,5 +1,6 @@
 'use client';
 
+import { Drop } from '@/components/slideshow/Drop';
 import Images from '@/components/slideshow/Images';
 import { LoadingSpinner } from '@/components/slideshow/LoadingSpinner';
 import Modal, { Items } from '@/components/slideshow/modal/Modal';
@@ -12,7 +13,6 @@ import {
 } from '@/repository/server/ingredient/putIngredient';
 import { getRecipe } from '@/repository/server/recipe/getRecipe';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 
 export type Item = {
   name: string;
@@ -69,13 +69,6 @@ const Slideshow = () => {
     ]);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': [],
-    },
-  });
-
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? foods.length - 1 : prevIndex - 1,
@@ -121,17 +114,7 @@ const Slideshow = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div
-        {...getRootProps()}
-        className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>画像をドロップしてください...</p>
-        ) : (
-          <p>ここをクリックするか、画像をドラッグ＆ドロップしてアップロード</p>
-        )}
-      </div>
+      <Drop onDrop={onDrop} />
 
       <div className="relative w-full max-w-2xl aspect-video">
         {canRender ? (

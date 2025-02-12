@@ -15,11 +15,12 @@ export async function analyze5Nutrients(
   try {
     const model = getGeminiModel();
 
-    const prompt = `こちらについて、5大栄養素における割合（目安）をCSV形式で出力してください。
+    const jsonText = JSON.stringify(ingredients);
+    const prompt = `こちらで「${jsonText}」指定された食材について、
+    5大栄養素における割合（目安）をCSV形式で出力してください。
     1列目が5大栄養素名、2列目が割合としてください。ヘッダーは不要です。
     推測で構いません。`;
 
-    const jsonText = JSON.stringify(ingredients);
     const textPart = {
       text: jsonText,
     };

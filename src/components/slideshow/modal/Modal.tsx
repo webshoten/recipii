@@ -49,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({
     } else {
       setInputs(() => [{ name: '', quantity: '' }]);
     }
-  }, [ingredient]);
+  }, [ingredient, setInputs]);
 
   if (!isOpen) return null;
 
