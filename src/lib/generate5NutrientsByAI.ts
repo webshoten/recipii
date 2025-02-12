@@ -1,4 +1,9 @@
-import { getApiKey, getGeminiModel } from '@/lib/gemini';
+import { getGeminiModel } from '@/lib/gemini';
+
+export type FiveNutrients = {
+  name: string;
+  percent: string;
+}[];
 
 // 画像を分析する関数
 export async function analyze5Nutrients(
@@ -7,9 +12,8 @@ export async function analyze5Nutrients(
     quantity: string | null;
   }[],
 ) {
-  const apiKey = getApiKey();
   try {
-    const model = getGeminiModel(apiKey);
+    const model = getGeminiModel();
 
     const prompt = `こちらについて、5大栄養素における割合（目安）をCSV形式で出力してください。
     1列目が5大栄養素名、2列目が割合としてください。ヘッダーは不要です。
@@ -29,7 +33,7 @@ export async function analyze5Nutrients(
         percent: a.split(',')[1],
       };
     });
-    return nutrients;
+    return nutrients as FiveNutrients;
   } catch (error) {
     console.error(`分析中にエラーが発生しました`, error);
     return [];

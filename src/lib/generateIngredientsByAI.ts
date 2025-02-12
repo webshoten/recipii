@@ -1,11 +1,10 @@
-import { getApiKey, getGeminiModel } from '@/lib/gemini';
+import { getGeminiModel } from '@/lib/gemini';
 import { readImageFileBuffer } from '@/lib/picture';
 
 // 画像を分析する関数
 export async function analyzeImage(imagePath: string) {
-  const apiKey = getApiKey();
   try {
-    const model = getGeminiModel(apiKey);
+    const model = getGeminiModel();
     const { data: base64, mimeType } = await readImageFileBuffer(imagePath);
 
     const prompt = `こちらに表示されている画像の中の料理で使用している食材と量をカンマ区切りで書き出してください。

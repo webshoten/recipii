@@ -2,15 +2,15 @@
 
 import Images from '@/components/slideshow/Images';
 import { LoadingSpinner } from '@/components/slideshow/LoadingSpinner';
-import Modal, { Items } from '@/components/slideshow/Modal';
+import Modal, { Items } from '@/components/slideshow/modal/Modal';
 import { NextButton } from '@/components/slideshow/NextButton';
 import { PreviousButton } from '@/components/slideshow/PreviousButton';
-import { putFood } from '@/repository/food/putFood';
+import { putFood } from '@/repository/server/food/putFood';
 import {
   putIngredient,
   PutIngredientResponse,
-} from '@/repository/ingredient/putIngredient';
-import { getRecipe } from '@/repository/recipe/getRecipe';
+} from '@/repository/server/ingredient/putIngredient';
+import { getRecipe } from '@/repository/server/recipe/getRecipe';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 

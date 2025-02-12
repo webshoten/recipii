@@ -1,9 +1,9 @@
-import { ItemsState } from '@/components/slideshow/Modal';
-import { GenerateIngredientByAI } from '@/components/slideshow/server/GenerateIngredientByAI';
+import { ItemsState } from '@/components/slideshow/modal/Modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { getFoodImage } from '@/repository/food/getFoodImage';
+import { analyzeImage } from '@/lib/generateIngredientsByAI';
+import { getFoodImage } from '@/repository/server/food/getFoodImage';
 import { Minus, Plus } from 'lucide-react';
 
 export const Recipe: React.FC<{
@@ -35,7 +35,7 @@ export const Recipe: React.FC<{
 
   const generateIngredientByAI = async () => {
     const url = await getFoodImage(foodFilePath);
-    const res = await GenerateIngredientByAI(url);
+    const res = await analyzeImage(url);
     setItems([...res]);
   };
 

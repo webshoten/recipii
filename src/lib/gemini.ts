@@ -11,7 +11,8 @@ export function getApiKey(): string {
 }
 
 // Geminiモデルを初期化する関数
-export function getGeminiModel(apiKey: string) {
+export function getGeminiModel() {
+  const apiKey = getApiKey();
   const genAI = new GoogleGenerativeAI(apiKey);
   return genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 }

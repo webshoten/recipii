@@ -1,5 +1,5 @@
-import { getFoods } from '@/repository/food/getFoods';
-import { getIngredients } from '@/repository/ingredient/getIngredient';
+import { getFoods } from '@/repository/server/food/getFoods';
+import { getIngredients } from '@/repository/server/ingredient/getIngredient';
 
 export const getRecipe = async () => {
   const foods = await getFoods();

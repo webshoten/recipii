@@ -1,5 +1,5 @@
-import { Nutorition } from '@/components/slideshow/Nutrition';
-import { Recipe } from '@/components/slideshow/Recipe';
+import { Nutorition } from '@/components/slideshow/modal/Nutrition';
+import { Recipe } from '@/components/slideshow/modal/Recipe';
 import { Ingredient } from '@/components/slideshow/Slideshow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type React from 'react';

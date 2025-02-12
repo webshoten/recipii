@@ -1,8 +1,9 @@
-import { ItemsState, NutritionState } from '@/components/slideshow/Modal';
-import { Generate5NutrientsByAI } from '@/components/slideshow/server/Generate5NutrientsByAI';
+import { ItemsState, NutritionState } from '@/components/slideshow/modal/Modal';
 import { Progress } from '@/components/ui/progress';
+import { analyze5Nutrients } from '@/lib/generate5NutrientsByAI';
+import { generateAdvice } from '@/lib/generateAdviceByAI';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 export const Nutorition: React.FC<{
   nutritionState: NutritionState;
@@ -10,14 +11,15 @@ export const Nutorition: React.FC<{
 }> = ({ nutritionState, itemsState }) => {
   const [items] = itemsState;
   const [nutritions, setNutritions] = nutritionState;
+  const [advice, setAdvice] = useState('');
 
   const generate5NutrientsByAI = async () => {
-    const res = await Generate5NutrientsByAI(
+    const res = await analyze5Nutrients(
       items.map((a) => {
         return { name: a.name, quantity: a.quantity + 'g' };
       }),
     );
-    setNutritions({
+    const fiveNutritions = {
       carbohydrate: Number(res.find((a) => a.name === '炭水化物')?.percent),
       fat: Number(res.find((a) => a.name === '脂質')?.percent),
       mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent),
@@ -26,13 +28,17 @@ export const Nutorition: React.FC<{
           ?.percent,
       ),
       vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent),
-    });
+    };
+    setNutritions(fiveNutritions);
+    return res;
   };
 
   useLayoutEffect(() => {
     return () => {
-      generate5NutrientsByAI().then(() => {
-        console.log('success');
+      generate5NutrientsByAI().then((res) => {
+        generateAdvice(res).then((r) => {
+          setAdvice(r);
+        });
       });
     };
   }, []);
@@ -95,10 +101,7 @@ export const Nutorition: React.FC<{
 
         <div className="rounded-lg bg-muted p-4">
           <h4 className="text-sm font-medium mb-2">アドバイス</h4>
-          <p className="text-sm text-muted-foreground">
-            このお食事は全体的にバランスが良好です。特にタンパク質の摂取が理想的な範囲内にあります。
-            ただし、脂質の摂取がやや少なめなので、オリーブオイルやアボカドなどの健康的な脂質を取り入れることをお勧めします。
-          </p>
+          <p className="text-sm text-muted-foreground">{advice}</p>
         </div>
       </div>
     </>
