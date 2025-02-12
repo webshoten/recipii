@@ -1,6 +1,6 @@
-import { Nutorition } from '@/app/components/slideshow/Nutrition';
-import { Recipe } from '@/app/components/slideshow/Recipe';
-import { Ingredient } from '@/app/components/slideshow/Slideshow';
+import { Nutorition } from '@/components/slideshow/Nutrition';
+import { Recipe } from '@/components/slideshow/Recipe';
+import { Ingredient } from '@/components/slideshow/Slideshow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type React from 'react';
 import { useLayoutEffect, useState } from 'react';

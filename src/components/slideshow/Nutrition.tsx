@@ -1,5 +1,5 @@
-import { ItemsState, NutritionState } from '@/app/components/slideshow/Modal';
-import { Generate5NutrientsByAI } from '@/app/components/slideshow/server/Generate5NutrientsByAI';
+import { ItemsState, NutritionState } from '@/components/slideshow/Modal';
+import { Generate5NutrientsByAI } from '@/components/slideshow/server/Generate5NutrientsByAI';
 import { Progress } from '@/components/ui/progress';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
 import { useLayoutEffect } from 'react';

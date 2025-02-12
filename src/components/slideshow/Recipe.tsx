@@ -1,5 +1,5 @@
-import { ItemsState } from '@/app/components/slideshow/Modal';
-import { GenerateIngredientByAI } from '@/app/components/slideshow/server/GenerateIngredientByAI';
+import { ItemsState } from '@/components/slideshow/Modal';
+import { GenerateIngredientByAI } from '@/components/slideshow/server/GenerateIngredientByAI';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';

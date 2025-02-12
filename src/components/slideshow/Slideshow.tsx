@@ -1,10 +1,10 @@
 'use client';
 
-import Images from '@/app/components/slideshow/Images';
-import { LoadingSpinner } from '@/app/components/slideshow/LoadingSpinner';
-import Modal, { Items } from '@/app/components/slideshow/Modal';
-import { NextButton } from '@/app/components/slideshow/NextButton';
-import { PreviousButton } from '@/app/components/slideshow/PreviousButton';
+import Images from '@/components/slideshow/Images';
+import { LoadingSpinner } from '@/components/slideshow/LoadingSpinner';
+import Modal, { Items } from '@/components/slideshow/Modal';
+import { NextButton } from '@/components/slideshow/NextButton';
+import { PreviousButton } from '@/components/slideshow/PreviousButton';
 import { putFood } from '@/repository/food/putFood';
 import {
   putIngredient,
