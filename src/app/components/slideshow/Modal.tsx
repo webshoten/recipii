@@ -1,7 +1,6 @@
 import { Nutorition } from '@/app/components/slideshow/Nutrition';
 import { Recipe } from '@/app/components/slideshow/Recipe';
 import { Ingredient } from '@/app/components/slideshow/Slideshow';
-import { Generate5NutrientsByAI } from '@/app/components/slideshow/server/Generate5NutrientsByAI';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type React from 'react';
 import { useLayoutEffect, useState } from 'react';
@@ -43,9 +42,6 @@ const Modal: React.FC<ModalProps> = ({
   const itemsState = useState<Items>(ingredient?.ingredients || []);
   const [inputs, setInputs] = itemsState;
   const nutritionState = useState<Nutorition | null>(null);
-  const [nutritions, setNutritions] = nutritionState;
-  console.log(nutritions);
-  const [tab, setTab] = useState<'recipe' | 'nutrition'>('recipe');
 
   useLayoutEffect(() => {
     if (ingredient && ingredient?.ingredients.length > 0) {
@@ -54,12 +50,6 @@ const Modal: React.FC<ModalProps> = ({
       setInputs(() => [{ name: '', quantity: '' }]);
     }
   }, [ingredient]);
-
-  useLayoutEffect(() => {
-    if (tab === 'nutrition') {
-      generate5NutrientsByAI().then(() => {});
-    }
-  }, [tab]);
 
   if (!isOpen) return null;
 
@@ -71,26 +61,7 @@ const Modal: React.FC<ModalProps> = ({
     ) {
       submitIngredient(inputs);
     }
-    setTab('recipe');
     onClose();
-  };
-
-  const generate5NutrientsByAI = async () => {
-    const res = await Generate5NutrientsByAI(
-      inputs.map((a) => {
-        return { name: a.name, quantity: a.quantity + 'g' };
-      }),
-    );
-    setNutritions({
-      carbohydrate: Number(res.find((a) => a.name === '炭水化物')?.percent),
-      fat: Number(res.find((a) => a.name === '脂質')?.percent),
-      mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent),
-      protein: Number(
-        res.find((a) => a.name === 'タンパク質' || a.name === 'たんぱく質')
-          ?.percent,
-      ),
-      vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent),
-    });
   };
 
   return (
@@ -102,18 +73,10 @@ const Modal: React.FC<ModalProps> = ({
       <div className="bg-white rounded-lg p-6 w-full max-w-md z-50 h-[500px] fixed ">
         <Tabs defaultValue="recipe" className="w-full z-0">
           <TabsList className="grid w-full grid-cols-2 mb-10">
-            <TabsTrigger
-              className="z-20"
-              value="recipe"
-              onClick={() => setTab('recipe')}
-            >
+            <TabsTrigger className="z-20" value="recipe">
               レシピ
             </TabsTrigger>
-            <TabsTrigger
-              className="z-20"
-              onClick={() => setTab('nutrition')}
-              value="nutrition"
-            >
+            <TabsTrigger className="z-20" value="nutrition">
               栄養バランス(AI)
             </TabsTrigger>
           </TabsList>
@@ -123,7 +86,10 @@ const Modal: React.FC<ModalProps> = ({
           </TabsContent>
 
           <TabsContent value="nutrition">
-            <Nutorition nutritionState={nutritionState} />
+            <Nutorition
+              itemsState={itemsState}
+              nutritionState={nutritionState}
+            />
           </TabsContent>
         </Tabs>
       </div>

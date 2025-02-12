@@ -1,11 +1,42 @@
-import { NutritionState } from '@/app/components/slideshow/Modal';
+import { ItemsState, NutritionState } from '@/app/components/slideshow/Modal';
+import { Generate5NutrientsByAI } from '@/app/components/slideshow/server/Generate5NutrientsByAI';
 import { Progress } from '@/components/ui/progress';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
+import { useLayoutEffect } from 'react';
 
 export const Nutorition: React.FC<{
   nutritionState: NutritionState;
-}> = ({ nutritionState }) => {
-  const [nutritions] = nutritionState;
+  itemsState: ItemsState;
+}> = ({ nutritionState, itemsState }) => {
+  const [items] = itemsState;
+  const [nutritions, setNutritions] = nutritionState;
+
+  const generate5NutrientsByAI = async () => {
+    const res = await Generate5NutrientsByAI(
+      items.map((a) => {
+        return { name: a.name, quantity: a.quantity + 'g' };
+      }),
+    );
+    setNutritions({
+      carbohydrate: Number(res.find((a) => a.name === '炭水化物')?.percent),
+      fat: Number(res.find((a) => a.name === '脂質')?.percent),
+      mineral: Number(res.find((a) => a.name === 'ミネラル')?.percent),
+      protein: Number(
+        res.find((a) => a.name === 'タンパク質' || a.name === 'たんぱく質')
+          ?.percent,
+      ),
+      vitamin: Number(res.find((a) => a.name === 'ビタミン')?.percent),
+    });
+  };
+
+  useLayoutEffect(() => {
+    return () => {
+      generate5NutrientsByAI().then(() => {
+        console.log('success');
+      });
+    };
+  }, []);
+
   return (
     <>
       <div className="space-y-4">
