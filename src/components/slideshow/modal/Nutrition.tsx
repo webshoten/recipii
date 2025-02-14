@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { analyze5Nutrients } from '@/lib/generate5NutrientsByAI';
 import { generateAdvice } from '@/lib/generateAdviceByAI';
 import { Apple, Beef, Carrot, Fish, Wheat } from 'lucide-react';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Nutorition: React.FC<{
   nutritionState: NutritionState;
@@ -33,7 +33,7 @@ export const Nutorition: React.FC<{
     return res;
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     return () => {
       generate5NutrientsByAI().then((res) => {
         generateAdvice(res).then((r) => {
