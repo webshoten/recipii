@@ -34,15 +34,13 @@ export const Nutorition: React.FC<{
   };
 
   useEffect(() => {
-    return () => {
-      generate5NutrientsByAI().then((res) => {
-        console.log('5n');
-        generateAdvice(res).then((r) => {
-          console.log('advice');
-          setAdvice(r);
-        });
+    generate5NutrientsByAI().then((res) => {
+      console.log('5n');
+      generateAdvice(res).then((r) => {
+        console.log('advice');
+        setAdvice(r);
       });
-    };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,7 +102,7 @@ export const Nutorition: React.FC<{
 
         <div className="rounded-lg bg-muted p-4">
           <h4 className="text-sm font-medium mb-2">アドバイス</h4>
-          {advice && <p className="text-sm text-muted-foreground">{advice}</p>}
+          <p className="text-sm text-muted-foreground">{advice}</p>
         </div>
       </div>
     </>
