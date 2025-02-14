@@ -104,7 +104,7 @@ export const Nutorition: React.FC<{
 
         <div className="rounded-lg bg-muted p-4">
           <h4 className="text-sm font-medium mb-2">アドバイス</h4>
-          <p className="text-sm text-muted-foreground">{advice}</p>
+          {advice && <p className="text-sm text-muted-foreground">{advice}</p>}
         </div>
       </div>
     </>
