@@ -64,7 +64,6 @@ const api = new Hono()
         yyyymmdd: z.string(),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.s3Client;
       const { yyyymmdd, name, type } = c.req.valid('json');
@@ -89,7 +88,6 @@ const api = new Hono()
         yyyymmdd: z.string(),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.dbClient;
       const { yyyymmdd } = c.req.valid('query');
@@ -113,7 +111,6 @@ const api = new Hono()
         yyyymmdd: z.string(),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.dbClient;
       const { name, yyyymmdd } = c.req.valid('json');
@@ -154,7 +151,6 @@ const api = new Hono()
         yyyymmdd: z.string(),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.s3Client;
       const { yyyymmdd } = c.req.valid('json');
@@ -205,7 +201,6 @@ const api = new Hono()
         ),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.dbClient;
       const { food_id, ingreds } = c.req.valid('json');
@@ -265,7 +260,6 @@ const api = new Hono()
         food_ids: z.array(z.string()).or(z.string()),
       }),
     ),
-    middleware,
     async (c) => {
       const client = c.var.dbClient;
       const { food_ids } = c.req.valid('query');
