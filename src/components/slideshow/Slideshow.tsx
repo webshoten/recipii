@@ -6,12 +6,14 @@ import { PreviousButton } from '@/components/common/PreviousButton';
 import { Drop } from '@/components/slideshow/Drop';
 import Images from '@/components/slideshow/Images';
 import Modal, { Items } from '@/components/slideshow/modal/Modal';
+import { getYyyymmdd } from '@/lib/date';
 import { putFood } from '@/repository/server/food/putFood';
 import {
   putIngredient,
   PutIngredientResponse,
 } from '@/repository/server/ingredient/putIngredient';
 import { getRecipe } from '@/repository/server/recipe/getRecipe';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useLayoutEffect, useState } from 'react';
 
 export type Item = {
@@ -36,6 +38,10 @@ export type Food = {
 };
 
 const Slideshow = () => {
+  const searchParams = useSearchParams();
+  const [yyyymmdd] = useState(
+    searchParams.get('yyyymmdd') ?? getYyyymmdd(new Date()),
+  );
   const [foods, setFoods] = useState<Food[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,8 +50,7 @@ const Slideshow = () => {
 
   useLayoutEffect(() => {
     if (canRender) return;
-
-    getRecipe().then(async (res) => {
+    getRecipe(yyyymmdd).then(async (res) => {
       setFoods((prev) => [...prev, ...res.foods]);
       setIngredients((prev) => [...prev, ...res.ingredients]);
       setCanRender(true);

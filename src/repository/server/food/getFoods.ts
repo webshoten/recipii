@@ -1,4 +1,3 @@
-import { getYyyymmdd } from '@/lib/date';
 import { getFilesFromUrls } from '@/lib/getFilesFromUrls';
 import { client } from '@/lib/honoServerSide';
 
@@ -9,8 +8,7 @@ export type GetFoodsResponse = {
   file: File;
 }[];
 
-export const getFoods = async () => {
-  const yyyymmdd = getYyyymmdd(new Date());
+export const getFoods = async (yyyymmdd: string) => {
   const res = await client.api.food.list.s3get.$post({
     json: {
       yyyymmdd,
