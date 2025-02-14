@@ -70,7 +70,7 @@ const Modal: React.FC<ModalProps> = ({
         onClick={() => onModalClose() /** モーダルが閉じたとき */}
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-0 top-0 left-0"
       ></div>
-      <div className="bg-white rounded-lg p-6 w-full max-w-md z-50 h-[500px] fixed ">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md z-50 h-[530px] fixed ">
         <Tabs defaultValue="recipe" className="w-full z-0">
           <TabsList className="grid w-full grid-cols-2 mb-10">
             <TabsTrigger className="z-20" value="recipe">

@@ -41,7 +41,7 @@ export const Recipe: React.FC<{
 
   return (
     <>
-      <ScrollArea className="h-[330px]">
+      <ScrollArea className="h-[360px]">
         <div className="space-y-4 p-3">
           {items.map((item, index) => (
             <div key={index} className="flex items-center mb-2">
