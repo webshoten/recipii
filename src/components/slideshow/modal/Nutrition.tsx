@@ -36,7 +36,9 @@ export const Nutorition: React.FC<{
   useEffect(() => {
     return () => {
       generate5NutrientsByAI().then((res) => {
+        console.log('5n');
         generateAdvice(res).then((r) => {
+          console.log('advice');
           setAdvice(r);
         });
       });
