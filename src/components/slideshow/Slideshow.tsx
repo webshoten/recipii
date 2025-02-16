@@ -14,7 +14,7 @@ import {
 } from '@/repository/server/ingredient/putIngredient';
 import { getRecipe } from '@/repository/server/recipe/getRecipe';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { Suspense, useCallback, useLayoutEffect, useState } from 'react';
 
 export type Item = {
   name: string;
@@ -118,40 +118,45 @@ const Slideshow = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <Drop onDrop={onDrop} />
+    <Suspense>
+      {' '}
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <Drop onDrop={onDrop} />
 
-      <div className="relative w-full max-w-2xl aspect-video">
-        {canRender ? (
-          <>
-            {foods.length !== 0 && (
-              <>
-                <Images
-                  target={foods[currentIndex]?.file as File}
-                  onClick={() => toggleModal(true)}
-                />
-                <PreviousButton goTo={goToPrevious} />
-                <NextButton goTo={goToNext} />
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-                  {currentIndex + 1} / {foods.length}
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
-        )}
+        <div className="relative w-full max-w-2xl aspect-video">
+          {canRender ? (
+            <>
+              {foods.length !== 0 && (
+                <>
+                  <Images
+                    target={foods[currentIndex]?.file as File}
+                    onClick={() => toggleModal(true)}
+                  />
+                  <PreviousButton goTo={goToPrevious} />
+                  <NextButton goTo={goToNext} />
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+                    {currentIndex + 1} / {foods.length}
+                  </div>
+                </>
+              )}
+            </>
+          ) : (
+            <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 m-auto rounded w-[200px] h-[200px]" />
+          )}
+        </div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => toggleModal(false)}
+          ingredient={ingredients.find(
+            (i) => i.foodId == foods[currentIndex].id,
+          )}
+          submitIngredient={submitIngredient}
+          foodFilePath={
+            foods[currentIndex]?.yyyymmdd + '/' + foods[currentIndex]?.name
+          }
+        />
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => toggleModal(false)}
-        ingredient={ingredients.find((i) => i.foodId == foods[currentIndex].id)}
-        submitIngredient={submitIngredient}
-        foodFilePath={
-          foods[currentIndex]?.yyyymmdd + '/' + foods[currentIndex]?.name
-        }
-      />
-    </div>
+    </Suspense>
   );
 };
 
